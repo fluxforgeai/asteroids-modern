@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Asteroids Test</title>
+    <style>
+        body { 
+            background: black; 
+            color: white; 
+            font-family: monospace; 
+            padding: 20px;
+        }
+        canvas { 
+            border: 1px solid cyan; 
+            display: block; 
+            margin: 20px 0;
+        }
+        button { 
+            padding: 10px 20px; 
+            font-size: 16px;
+            margin: 5px;
+            background: #0ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+        }
+        #log { 
+            background: #111; 
+            padding: 10px; 
+            margin: 10px 0; 
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimal Asteroids Test</h1>
+    <p>This tests basic functionality without complex systems</p>
+    
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <button id="startButton">Start Minimal Game</button>
+    
+    <!-- Required UI elements -->
+    <div style="display: none;">
+        <div id="gameMenu">Game Menu</div>
+        <div id="score">0</div>
+        <div id="lives">3</div>
+        <div id="level">1</div>
+        <div id="highScore">0</div>
+        <div id="shieldIndicator"><span>0</span></div>
+        <div id="rapidFireIndicator"><span>0</span></div>
+        <ol id="highScoresList"></ol>
+        <div class="mobile-controls">
+            <button id="leftBtn">←</button>
+            <button id="rightBtn">→</button>
+            <button id="thrustBtn">↑</button>
+            <button id="fireBtn">FIRE</button>
+            <button id="hyperBtn">H</button>
+        </div>
+    </div>
+    
+    <div id="log"></div>
+
+    <script type="module">
+        const log = document.getElementById('log');
+        
+        function addLog(message, isError = false) {
+            console.log(message);
+            const div = document.createElement('div');
+            div.style.color = isError ? '#ff4444' : '#44ff44';
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Minimal game class for testing
+        class MinimalGame {
+            constructor(canvas) {
+                addLog('MinimalGame constructor called');
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.running = false;
+                addLog('MinimalGame initialized successfully');
+            }
+            
+            start() {
+                addLog('MinimalGame start() called');
+                this.running = true;
+                this.gameLoop();
+                addLog('MinimalGame started successfully');
+            }
+            
+            gameLoop() {
+                if (!this.running) return;
+                
+                // Clear canvas
+                this.ctx.fillStyle = 'black';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw a simple rectangle
+                this.ctx.fillStyle = 'cyan';
+                this.ctx.fillRect(50, 50, 100, 50);
+                
+                // Draw some text
+                this.ctx.fillStyle = 'white';
+                this.ctx.font = '20px monospace';
+                this.ctx.fillText('Minimal Game Running!', 50, 150);
+                
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+        
+        // Test basic functionality
+        addLog('Starting minimal test...');
+        
+        try {
+            const canvas = document.getElementById('gameCanvas');
+            if (!canvas) {
+                throw new Error('Canvas not found');
+            }
+            addLog('Canvas found');
+            
+            const game = new MinimalGame(canvas);
+            addLog('Minimal game created');
+            
+            document.getElementById('startButton').addEventListener('click', () => {
+                addLog('Start button clicked');
+                try {
+                    game.start();
+                } catch (error) {
+                    addLog('Error starting game: ' + error.message, true);
+                    console.error(error);
+                }
+            });
+            
+            addLog('Event listener attached. Ready to test!');
+            
+        } catch (error) {
+            addLog('Critical error: ' + error.message, true);
+            console.error(error);
+        }
+    </script>
+</body>
+</html>

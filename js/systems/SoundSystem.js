@@ -12,22 +12,43 @@ export class SoundSystem {
     
     initialize() {
         try {
+            console.log('[SOUND] Initializing Web Audio API...');
+            
+            // Check if Web Audio API is available
+            if (!window.AudioContext && !window.webkitAudioContext) {
+                throw new Error('Web Audio API not available');
+            }
+            
             this.context = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('[SOUND] AudioContext created, state:', this.context.state);
+            
             this.masterGain = this.context.createGain();
             this.masterGain.gain.value = CONFIG.SOUNDS.VOLUME;
             this.masterGain.connect(this.context.destination);
             
+            console.log('[SOUND] Master gain node created');
+            
             // Create sound generators
             this.createSounds();
+            console.log('[SOUND] Sound generators created');
+            
         } catch (error) {
-            console.warn('Web Audio API not supported:', error);
+            console.warn('[SOUND] Web Audio API initialization failed:', error);
             this.enabled = false;
         }
     }
     
     createSounds() {
-        // Laser sound
-        this.sounds.set('fire', () => {
+        if (!this.context || !this.enabled) {
+            console.log('[SOUND] Skipping sound creation - context not available');
+            return;
+        }
+        
+        try {
+            console.log('[SOUND] Creating sound generators...');
+            
+            // Laser sound
+            this.sounds.set('fire', () => {
             const oscillator = this.context.createOscillator();
             const gain = this.context.createGain();
             
@@ -111,6 +132,13 @@ export class SoundSystem {
                 oscillator.stop(this.context.currentTime + i * 0.1 + 0.2);
             }
         });
+        
+        console.log('[SOUND] All sound generators created successfully');
+        
+        } catch (error) {
+            console.error('[SOUND] Error creating sound generators:', error);
+            this.enabled = false;
+        }
     }
     
     createExplosion(duration, frequency) {
