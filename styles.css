@@ -31,8 +31,8 @@ body {
 /* Mobile-first canvas sizing */
 @media (max-width: 1024px) {
     #gameCanvas {
-        width: 95vw !important;
-        height: calc(100vh - 200px) !important;
+        width: 90vw !important;
+        height: 60vh !important;
         max-width: none !important;
         max-height: none !important;
         border: 1px solid #0ff;
@@ -41,6 +41,16 @@ body {
     #gameContainer {
         padding: 0;
         margin: 0;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    
+    #gameUI {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin-bottom: 10px;
     }
 }
 
@@ -194,43 +204,43 @@ body {
 
 @media (max-width: 768px) {
     .mobile-controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        align-items: center;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: 1fr;
         position: fixed;
         bottom: 20px;
-        left: 20px;
-        right: 20px;
-        height: 160px;
-        gap: 15px;
+        left: 5%;
+        right: 5%;
+        height: 80px;
+        gap: 5px;
         z-index: 20;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.5);
         border-radius: 10px;
         padding: 10px;
+        align-items: center;
+        justify-items: center;
     }
     
-    /* Create a better layout for mobile controls */
-    #thrustBtn { order: 1; align-self: flex-start; }
-    #hyperBtn { order: 2; align-self: flex-start; }
-    #leftBtn { order: 3; align-self: flex-end; }
-    #fireBtn { order: 4; align-self: flex-end; }
-    #rightBtn { order: 5; align-self: flex-end; }
+    /* Simple left-to-right layout */
+    #leftBtn { grid-column: 1; }
+    #rightBtn { grid-column: 2; }
+    #thrustBtn { grid-column: 3; }
+    #fireBtn { grid-column: 4; }
+    #hyperBtn { grid-column: 5; }
     
     .control-btn {
         background: rgba(0, 255, 255, 0.3);
         border: 2px solid #0ff;
         color: #0ff;
-        width: 70px;
-        height: 70px;
-        font-size: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
         border-radius: 50%;
         cursor: pointer;
         touch-action: manipulation;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
         font-weight: bold;
-        flex-shrink: 0;
     }
     
     .control-btn:active {
@@ -239,9 +249,9 @@ body {
     }
     
     .control-btn.fire {
-        width: 85px;
-        height: 85px;
-        font-size: 18px;
+        width: 60px;
+        height: 60px;
+        font-size: 14px;
         font-weight: bold;
         background: rgba(255, 100, 0, 0.3);
         border-color: #ff6400;
@@ -253,14 +263,16 @@ body {
     }
     
     #gameStats {
-        font-size: 10px;
+        font-size: 12px;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 5px;
-        justify-content: space-between;
+        gap: 10px;
+        justify-content: center;
         background: rgba(0, 0, 0, 0.7);
-        padding: 5px 10px;
+        padding: 8px 15px;
         border-radius: 5px;
+        margin: 0 auto;
+        max-width: 90vw;
     }
     
     #gameMenu {
@@ -292,22 +304,22 @@ body {
 @media (max-width: 480px) {
     .mobile-controls {
         bottom: 10px;
-        gap: 10px;
-        height: 140px;
-        left: 10px;
-        right: 10px;
+        gap: 3px;
+        height: 70px;
+        left: 2%;
+        right: 2%;
     }
     
     .control-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 18px;
+        width: 45px;
+        height: 45px;
+        font-size: 14px;
     }
     
     .control-btn.fire {
-        width: 75px;
-        height: 75px;
-        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        font-size: 12px;
     }
     
     #gameMenu h1 {
@@ -315,13 +327,7 @@ body {
     }
     
     #gameStats {
-        font-size: 9px;
-        gap: 3px;
-    }
-    
-    #gameUI {
-        top: 5px;
-        left: 5px;
-        right: 5px;
+        font-size: 11px;
+        gap: 8px;
     }
 }
