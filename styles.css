@@ -28,6 +28,17 @@ body {
     max-height: 100%;
 }
 
+/* Mobile-first canvas sizing */
+@media (max-width: 1024px) {
+    #gameCanvas {
+        width: 100vw !important;
+        height: calc(100vh - 140px) !important;
+        max-width: none !important;
+        max-height: none !important;
+        border: 1px solid #0ff;
+    }
+}
+
 #gameUI {
     position: absolute;
     top: 20px;
@@ -178,29 +189,40 @@ body {
 
 @media (max-width: 768px) {
     .mobile-controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
         position: fixed;
         bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        gap: 15px;
+        left: 10px;
+        right: 10px;
+        height: 120px;
+        gap: 10px;
         z-index: 20;
+        align-items: center;
+        justify-items: center;
     }
+    
+    /* Arrange controls in a more intuitive layout */
+    #leftBtn { grid-column: 1; grid-row: 2; }
+    #rightBtn { grid-column: 3; grid-row: 2; }
+    #thrustBtn { grid-column: 2; grid-row: 1; }
+    #fireBtn { grid-column: 2; grid-row: 2; }
+    #hyperBtn { grid-column: 1; grid-row: 1; }
     
     .control-btn {
         background: rgba(0, 255, 255, 0.2);
         border: 2px solid #0ff;
         color: #0ff;
-        width: 70px;
-        height: 70px;
-        font-size: 20px;
+        width: 80px;
+        height: 80px;
+        font-size: 24px;
         border-radius: 50%;
         cursor: pointer;
         touch-action: manipulation;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
+        font-weight: bold;
     }
     
     .control-btn:active {
@@ -209,9 +231,9 @@ body {
     }
     
     .control-btn.fire {
-        width: 90px;
-        height: 90px;
-        font-size: 18px;
+        width: 100px;
+        height: 100px;
+        font-size: 20px;
         font-weight: bold;
         background: rgba(255, 100, 0, 0.2);
         border-color: #ff6400;
@@ -223,11 +245,14 @@ body {
     }
     
     #gameStats {
-        font-size: 11px;
+        font-size: 10px;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 5px;
         justify-content: space-between;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 5px 10px;
+        border-radius: 5px;
     }
     
     #gameMenu {
@@ -245,12 +270,7 @@ body {
         font-size: 18px;
     }
     
-    #gameCanvas {
-        max-width: 95vw;
-        max-height: 75vh;
-        width: 95vw;
-        height: auto;
-    }
+    /* Remove the old mobile canvas rules - handled by the global mobile rule above */
     
     #instructions {
         font-size: 12px;
@@ -265,18 +285,19 @@ body {
     .mobile-controls {
         bottom: 5px;
         gap: 8px;
+        height: 110px;
     }
     
     .control-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 16px;
+        width: 70px;
+        height: 70px;
+        font-size: 20px;
     }
     
     .control-btn.fire {
-        width: 70px;
-        height: 70px;
-        font-size: 14px;
+        width: 85px;
+        height: 85px;
+        font-size: 18px;
     }
     
     #gameMenu h1 {
@@ -284,14 +305,8 @@ body {
     }
     
     #gameStats {
-        font-size: 10px;
-        gap: 5px;
-    }
-    
-    #gameCanvas {
-        max-width: 98vw;
-        max-height: 80vh;
-        width: 98vw;
+        font-size: 9px;
+        gap: 3px;
     }
     
     #gameUI {
