@@ -572,6 +572,22 @@ export class Game {
     pause() {
         if (this.state === 'playing') {
             this.state = 'paused';
+            
+            // Stop thrust sound when pausing
+            if (this.thrustSound) {
+                this.soundSystem.stop(this.thrustSound);
+                this.thrustSound = null;
+            }
+            
+            // Stop UFO sound when pausing
+            if (this.ufoSound) {
+                this.soundSystem.stop(this.ufoSound);
+                this.ufoSound = null;
+            }
+            
+            // Mute all sounds
+            this.soundSystem.mute();
+            
             document.getElementById('gameMenu').style.display = 'block';
             document.getElementById('startButton').style.display = 'none';
             document.getElementById('resumeButton').style.display = 'block';
@@ -581,6 +597,15 @@ export class Game {
     resume() {
         if (this.state === 'paused') {
             this.state = 'playing';
+            
+            // Unmute sounds when resuming
+            this.soundSystem.unmute();
+            
+            // Restart UFO sound if UFO exists
+            if (this.ufo && !this.ufoSound) {
+                this.ufoSound = this.soundSystem.play(`ufo_${this.ufo.size}`);
+            }
+            
             document.getElementById('gameMenu').style.display = 'none';
         }
     }

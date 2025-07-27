@@ -14,9 +14,9 @@ export const CONFIG = {
     },
     
     SHIP: {
-        SIZE: 15,
+        SIZE: 12,
         THRUST: 300,
-        TURN_SPEED: 360,
+        TURN_SPEED: 180,
         FRICTION: 0.7,
         MAX_SPEED: 500,
         BLINK_RATE: 0.1,

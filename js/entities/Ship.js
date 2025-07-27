@@ -81,23 +81,88 @@ export class Ship extends Entity {
         ctx.strokeStyle = CONFIG.COLORS.SHIP;
         ctx.lineWidth = 2;
         
-        // Draw ship
+        // Draw SpaceX Starship-inspired design
         ctx.beginPath();
-        ctx.moveTo(this.radius, 0);
-        ctx.lineTo(-this.radius, -this.radius * 0.7);
-        ctx.lineTo(-this.radius * 0.5, 0);
-        ctx.lineTo(-this.radius, this.radius * 0.7);
+        
+        // Main body (cylindrical section)
+        const bodyWidth = this.radius * 0.4;
+        const bodyHeight = this.radius * 1.6;
+        
+        // Nose cone (pointed top)
+        ctx.moveTo(this.radius, 0); // Tip
+        ctx.lineTo(this.radius * 0.6, -bodyWidth);
+        ctx.lineTo(-bodyHeight * 0.3, -bodyWidth);
+        
+        // Main cylindrical body
+        ctx.lineTo(-bodyHeight, -bodyWidth);
+        ctx.lineTo(-bodyHeight, bodyWidth);
+        
+        // Bottom section
+        ctx.lineTo(-bodyHeight * 0.3, bodyWidth);
+        ctx.lineTo(this.radius * 0.6, bodyWidth);
         ctx.closePath();
         ctx.stroke();
         
-        // Draw thrust
-        if (this.thrustPower > 0 && Math.random() > 0.1) {
+        // Draw fins/landing legs
+        ctx.beginPath();
+        // Left fin
+        ctx.moveTo(-bodyHeight * 0.8, -bodyWidth);
+        ctx.lineTo(-bodyHeight * 1.1, -bodyWidth * 1.5);
+        ctx.lineTo(-bodyHeight * 0.9, -bodyWidth * 1.3);
+        
+        // Right fin
+        ctx.moveTo(-bodyHeight * 0.8, bodyWidth);
+        ctx.lineTo(-bodyHeight * 1.1, bodyWidth * 1.5);
+        ctx.lineTo(-bodyHeight * 0.9, bodyWidth * 1.3);
+        ctx.stroke();
+        
+        // Add some detail lines (panels and segments)
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        // Vertical panel lines
+        ctx.moveTo(-bodyHeight * 0.2, -bodyWidth * 0.8);
+        ctx.lineTo(-bodyHeight * 0.2, bodyWidth * 0.8);
+        ctx.moveTo(-bodyHeight * 0.6, -bodyWidth * 0.8);
+        ctx.lineTo(-bodyHeight * 0.6, bodyWidth * 0.8);
+        
+        // Horizontal segment lines
+        ctx.moveTo(-bodyHeight * 0.1, -bodyWidth);
+        ctx.lineTo(-bodyHeight * 0.1, bodyWidth);
+        ctx.moveTo(-bodyHeight * 0.4, -bodyWidth);
+        ctx.lineTo(-bodyHeight * 0.4, bodyWidth);
+        ctx.moveTo(-bodyHeight * 0.7, -bodyWidth);
+        ctx.lineTo(-bodyHeight * 0.7, bodyWidth);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        
+        // Draw raptor engines (thrust)
+        if (this.thrustPower > 0) {
             ctx.strokeStyle = CONFIG.COLORS.THRUST;
-            ctx.beginPath();
-            ctx.moveTo(-this.radius * 0.5, -this.radius * 0.3);
-            ctx.lineTo(-this.radius * (1 + this.thrustPower * 0.5), 0);
-            ctx.lineTo(-this.radius * 0.5, this.radius * 0.3);
-            ctx.stroke();
+            ctx.fillStyle = CONFIG.COLORS.THRUST;
+            
+            // Multiple engine plumes
+            const enginePositions = [-bodyWidth * 0.3, 0, bodyWidth * 0.3];
+            
+            for (let engineY of enginePositions) {
+                if (Math.random() > 0.1) { // Flickering effect
+                    ctx.beginPath();
+                    
+                    // Engine bell
+                    ctx.arc(-bodyHeight, engineY, bodyWidth * 0.15, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    // Flame plume
+                    const flameLength = this.radius * (1 + this.thrustPower * 0.8);
+                    ctx.beginPath();
+                    ctx.moveTo(-bodyHeight - bodyWidth * 0.1, engineY - bodyWidth * 0.1);
+                    ctx.lineTo(-bodyHeight - flameLength, engineY + (Math.random() - 0.5) * bodyWidth * 0.3);
+                    ctx.lineTo(-bodyHeight - bodyWidth * 0.1, engineY + bodyWidth * 0.1);
+                    ctx.closePath();
+                    ctx.globalAlpha = 0.8;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
         }
         
         // Draw shield
@@ -105,7 +170,7 @@ export class Ship extends Entity {
             ctx.strokeStyle = CONFIG.COLORS.POWERUP.SHIELD;
             ctx.globalAlpha = 0.5;
             ctx.beginPath();
-            ctx.arc(0, 0, this.radius * 1.5, 0, Math.PI * 2);
+            ctx.arc(0, 0, this.radius * 1.8, 0, Math.PI * 2);
             ctx.stroke();
             ctx.globalAlpha = 1;
         }
