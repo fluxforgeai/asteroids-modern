@@ -9,8 +9,11 @@ export class MobileResponsive {
         console.log('[MOBILE] Device pixel ratio:', this.devicePixelRatio);
         console.log('[MOBILE] Is portrait:', this.isPortrait);
         
-        this.setupResponsiveLayout();
-        this.setupResizeListener();
+        // Delay setup to ensure DOM is ready
+        setTimeout(() => {
+            this.setupResponsiveLayout();
+            this.setupResizeListener();
+        }, 100);
     }
     
     setupResponsiveLayout() {
@@ -53,38 +56,65 @@ export class MobileResponsive {
         const mobileControls = document.querySelector('.mobile-controls');
         if (!mobileControls) return;
         
-        // Calculate button size based on screen width
+        // Calculate button size based on screen width - be more conservative
         const buttonCount = 5;
-        const gaps = (buttonCount - 1) * 10; // 10px gaps between buttons
-        const margins = 40; // 20px on each side
-        const availableWidth = this.screenWidth - margins - gaps;
-        const buttonSize = Math.min(60, Math.floor(availableWidth / buttonCount));
+        const margins = 20; // 10px on each side
+        const padding = 20; // 10px padding inside control panel
+        const minGap = 5; // Minimum gap between buttons
+        const totalGaps = (buttonCount - 1) * minGap;
+        const availableWidth = this.screenWidth - margins - padding - totalGaps;
+        const buttonSize = Math.max(40, Math.min(55, Math.floor(availableWidth / buttonCount)));
         
+        console.log('[MOBILE] Screen width:', this.screenWidth);
+        console.log('[MOBILE] Available width for buttons:', availableWidth);
         console.log('[MOBILE] Button size calculated:', buttonSize);
+        
+        // Force show all buttons first
+        const allButtons = ['leftBtn', 'rightBtn', 'thrustBtn', 'fireBtn', 'hyperBtn'];
+        allButtons.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.style.display = 'flex';
+                btn.style.visibility = 'visible';
+                btn.style.opacity = '1';
+            }
+        });
         
         // Apply dynamic styles
         mobileControls.style.cssText = `
             display: flex !important;
             flex-direction: row !important;
-            justify-content: space-evenly !important;
+            justify-content: space-between !important;
             align-items: center !important;
             position: fixed !important;
             bottom: 10px !important;
             left: 10px !important;
             right: 10px !important;
-            height: ${controlsHeight}px !important;
-            background: rgba(0, 0, 0, 0.7) !important;
+            height: ${Math.max(70, controlsHeight)}px !important;
+            background: rgba(0, 0, 0, 0.8) !important;
             border-radius: 10px !important;
             padding: 10px !important;
             z-index: 1000 !important;
-            gap: 10px !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
         `;
         
-        // Style all control buttons
-        const buttons = mobileControls.querySelectorAll('.control-btn');
-        buttons.forEach((button, index) => {
-            const isFireButton = button.id === 'fireBtn';
-            const size = isFireButton ? buttonSize + 10 : buttonSize;
+        // Style all control buttons with specific order
+        const buttonOrder = [
+            { id: 'leftBtn', label: '←' },
+            { id: 'rightBtn', label: '→' },
+            { id: 'thrustBtn', label: '↑' },
+            { id: 'fireBtn', label: 'FIRE' },
+            { id: 'hyperBtn', label: 'H' }
+        ];
+        
+        buttonOrder.forEach((btnInfo, index) => {
+            const button = document.getElementById(btnInfo.id);
+            if (!button) return;
+            
+            const isFireButton = btnInfo.id === 'fireBtn';
+            const size = isFireButton ? Math.min(buttonSize + 8, 60) : buttonSize;
+            const fontSize = isFireButton ? Math.max(10, size * 0.25) : Math.max(12, size * 0.35);
             
             button.style.cssText = `
                 width: ${size}px !important;
@@ -93,7 +123,7 @@ export class MobileResponsive {
                 border: 2px solid #0ff !important;
                 background: rgba(0, 255, 255, 0.3) !important;
                 color: #0ff !important;
-                font-size: ${Math.max(12, size * 0.3)}px !important;
+                font-size: ${fontSize}px !important;
                 font-weight: bold !important;
                 display: flex !important;
                 align-items: center !important;
@@ -102,14 +132,26 @@ export class MobileResponsive {
                 user-select: none !important;
                 -webkit-tap-highlight-color: transparent !important;
                 flex-shrink: 0 !important;
+                position: relative !important;
+                order: ${index} !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
             `;
             
             if (isFireButton) {
-                button.style.background = 'rgba(255, 100, 0, 0.3) !important';
+                button.style.background = 'rgba(255, 100, 0, 0.4) !important';
                 button.style.borderColor = '#ff6400 !important';
                 button.style.color = '#ff6400 !important';
             }
+            
+            // Ensure text content is correct
+            if (button.textContent !== btnInfo.label) {
+                button.textContent = btnInfo.label;
+            }
         });
+        
+        console.log('[MOBILE] All 5 buttons configured');
     }
     
     setupResizeListener() {
