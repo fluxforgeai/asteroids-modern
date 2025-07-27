@@ -223,9 +223,11 @@ body {
     }
     
     #gameStats {
-        font-size: 12px;
-        flex-direction: column;
-        gap: 5px;
+        font-size: 11px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: space-between;
     }
     
     #gameMenu {
@@ -245,7 +247,9 @@ body {
     
     #gameCanvas {
         max-width: 95vw;
-        max-height: 60vh;
+        max-height: 75vh;
+        width: 95vw;
+        height: auto;
     }
     
     #instructions {
@@ -260,19 +264,19 @@ body {
 @media (max-width: 480px) {
     .mobile-controls {
         bottom: 5px;
-        gap: 10px;
+        gap: 8px;
     }
     
     .control-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 18px;
+        width: 55px;
+        height: 55px;
+        font-size: 16px;
     }
     
     .control-btn.fire {
-        width: 75px;
-        height: 75px;
-        font-size: 16px;
+        width: 70px;
+        height: 70px;
+        font-size: 14px;
     }
     
     #gameMenu h1 {
@@ -280,6 +284,19 @@ body {
     }
     
     #gameStats {
-        font-size: 11px;
+        font-size: 10px;
+        gap: 5px;
+    }
+    
+    #gameCanvas {
+        max-width: 98vw;
+        max-height: 80vh;
+        width: 98vw;
+    }
+    
+    #gameUI {
+        top: 5px;
+        left: 5px;
+        right: 5px;
     }
 }
