@@ -179,17 +179,107 @@ body {
 @media (max-width: 768px) {
     .mobile-controls {
         display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 15px;
+        z-index: 20;
+    }
+    
+    .control-btn {
+        background: rgba(0, 255, 255, 0.2);
+        border: 2px solid #0ff;
+        color: #0ff;
+        width: 70px;
+        height: 70px;
+        font-size: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .control-btn:active {
+        background: rgba(0, 255, 255, 0.5);
+        transform: scale(0.95);
+    }
+    
+    .control-btn.fire {
+        width: 90px;
+        height: 90px;
+        font-size: 18px;
+        font-weight: bold;
+        background: rgba(255, 100, 0, 0.2);
+        border-color: #ff6400;
+        color: #ff6400;
+    }
+    
+    .control-btn.fire:active {
+        background: rgba(255, 100, 0, 0.5);
     }
     
     #gameStats {
-        font-size: 14px;
+        font-size: 12px;
+        flex-direction: column;
+        gap: 5px;
     }
     
     #gameMenu {
-        padding: 20px;
+        padding: 15px;
+        max-width: 90vw;
     }
     
     #gameMenu h1 {
-        font-size: 32px;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+    
+    .menu-button {
+        padding: 12px 30px;
+        font-size: 18px;
+    }
+    
+    #gameCanvas {
+        max-width: 95vw;
+        max-height: 60vh;
+    }
+    
+    #instructions {
+        font-size: 12px;
+    }
+    
+    .control-item {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-controls {
+        bottom: 5px;
+        gap: 10px;
+    }
+    
+    .control-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+    }
+    
+    .control-btn.fire {
+        width: 75px;
+        height: 75px;
+        font-size: 16px;
+    }
+    
+    #gameMenu h1 {
+        font-size: 24px;
+    }
+    
+    #gameStats {
+        font-size: 11px;
     }
 }

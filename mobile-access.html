@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Access - Asteroids Game</title>
+    <style>
+        body {
+            background: #000;
+            color: #0ff;
+            font-family: monospace;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 50, 50, 0.1);
+            padding: 30px;
+            border: 2px solid #0ff;
+            border-radius: 10px;
+        }
+        .qr-code {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .ip-address {
+            background: #111;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #333;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .instructions {
+            text-align: left;
+            background: rgba(0, 20, 20, 0.5);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid #0ff;
+        }
+        .mobile-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 15px;
+            border: 1px solid #0ff;
+            border-radius: 5px;
+        }
+        button {
+            background: #0ff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #44ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Asteroids Game - Mobile Access</h1>
+        
+        <div class="instructions">
+            <h2>📱 How to Play on Mobile:</h2>
+            <ol>
+                <li><strong>Connect to same WiFi</strong> as this computer</li>
+                <li><strong>Open browser</strong> on your phone/tablet</li>
+                <li><strong>Enter the URL below</strong> or scan QR code</li>
+                <li><strong>Click index.html</strong> to start the game</li>
+            </ol>
+        </div>
+        
+        <div class="ip-address">
+            <h3>🌐 Game URL:</h3>
+            <div id="gameUrl">Loading...</div>
+        </div>
+        
+        <div class="qr-code">
+            <div id="qrcode"></div>
+        </div>
+        
+        <button onclick="copyUrl()">📋 Copy URL</button>
+        <button onclick="openGame()">🎮 Open Game</button>
+        
+        <div class="mobile-features">
+            <div class="feature">
+                <h4>🎮 Touch Controls</h4>
+                <p>Virtual gamepad with all game controls</p>
+            </div>
+            <div class="feature">
+                <h4>📱 Responsive</h4>
+                <p>Optimized for all screen sizes</p>
+            </div>
+            <div class="feature">
+                <h4>🚀 Full Features</h4>
+                <p>Same game experience as desktop</p>
+            </div>
+            <div class="feature">
+                <h4>🔊 Audio</h4>
+                <p>Web Audio API support (may require interaction)</p>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>🎮 Mobile Controls:</h3>
+            <ul>
+                <li><strong>← →</strong> - Rotate ship</li>
+                <li><strong>↑</strong> - Thrust</li>
+                <li><strong>FIRE</strong> - Shoot bullets</li>
+                <li><strong>H</strong> - Hyperspace jump</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Get local IP and generate QR code
+        async function setupMobileAccess() {
+            // Try to get the IP from the current URL or use default
+            const hostname = window.location.hostname;
+            const port = window.location.port || '8000';
+            const gameUrl = `http://${hostname}:${port}`;
+            
+            document.getElementById('gameUrl').textContent = gameUrl;
+            
+            // Generate QR code
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(gameUrl);
+                qr.make();
+                document.getElementById('qrcode').innerHTML = qr.createImgTag(4);
+            } catch (error) {
+                document.getElementById('qrcode').innerHTML = 
+                    '<p style="color: #ff4444;">QR Code generation failed.<br>Use URL above instead.</p>';
+            }
+        }
+        
+        function copyUrl() {
+            const url = document.getElementById('gameUrl').textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('URL copied to clipboard!');
+            });
+        }
+        
+        function openGame() {
+            const url = document.getElementById('gameUrl').textContent;
+            window.open(url, '_blank');
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', setupMobileAccess);
+    </script>
+</body>
+</html>
