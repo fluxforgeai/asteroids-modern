@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asteroids - Mobile Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 90vh; /* Use 90% of screen */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #gameCanvas {
+            border: 1px solid #0ff;
+            /* Make it as large as possible while square */
+            width: min(100vw, 88vh);
+            height: min(100vw, 88vh);
+            display: block;
+            box-shadow: 0 0 10px #0ff;
+        }
+        
+        #gameUI {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px;
+            z-index: 10;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #gameStats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 9px;
+        }
+        
+        .stat-item {
+            text-shadow: 0 0 10px #0ff;
+        }
+        
+        #powerUps {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            font-size: 9px;
+            margin-top: 5px;
+        }
+        
+        .power-up {
+            opacity: 0.5;
+        }
+        
+        .power-up.active {
+            opacity: 1;
+            text-shadow: 0 0 10px #ff0;
+        }
+        
+        #gameMenu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #0ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px #0ff;
+            z-index: 20;
+            max-width: 90vw;
+        }
+        
+        #gameMenu h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px #0ff;
+        }
+        
+        .menu-button {
+            background: transparent;
+            border: 2px solid #0ff;
+            color: #0ff;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+            font-family: inherit;
+        }
+        
+        #instructions {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 10px;
+        }
+        
+        #instructions h3 {
+            margin-bottom: 5px;
+            color: #0ff;
+        }
+        
+        .control-item {
+            margin: 3px 0;
+            font-size: 9px;
+        }
+        
+        /* CRITICAL: Mobile controls that WILL show all 5 buttons */
+        #mobileControls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 10vh; /* Reduced to 10% */
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 1px solid #0ff;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 3px;
+            gap: 6px;
+            z-index: 1000;
+        }
+        
+        .control-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #0ff;
+            background: rgba(0, 255, 255, 0.3);
+            color: #0ff;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .control-btn.fire {
+            width: 36px;
+            height: 36px;
+            font-size: 7px;
+            background: rgba(255, 100, 0, 0.4);
+            border-color: #ff6400;
+            color: #ff6400;
+        }
+        
+        .control-btn:active {
+            background: rgba(0, 255, 255, 0.6);
+            transform: scale(0.9);
+        }
+        
+        .control-btn.fire:active {
+            background: rgba(255, 100, 0, 0.7);
+        }
+        
+        .high-scores {
+            margin-top: 10px;
+            font-size: 10px;
+        }
+        
+        .high-scores h3 {
+            color: #0ff;
+            margin-bottom: 5px;
+        }
+        
+        #highScoresList {
+            list-style: none;
+            font-size: 9px;
+        }
+        
+        #highScoresList li {
+            margin: 3px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="gameUI">
+            <div id="gameStats">
+                <div class="stat-item">Score: <span id="score">0</span></div>
+                <div class="stat-item">High Score: <span id="highScore">0</span></div>
+                <div class="stat-item">Lives: <span id="lives">3</span></div>
+                <div class="stat-item">Level: <span id="level">1</span></div>
+            </div>
+            <div id="powerUps">
+                <div class="power-up" id="shieldIndicator">Shield: <span>0</span></div>
+                <div class="power-up" id="rapidFireIndicator">Rapid Fire: <span>0</span></div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="gameMenu">
+            <h1>ASTEROIDS</h1>
+            <button id="startButton" class="menu-button">Start Game</button>
+            <button id="resumeButton" class="menu-button" style="display: none;">Resume</button>
+            <div id="highScores" class="high-scores">
+                <h3>High Scores</h3>
+                <ol id="highScoresList"></ol>
+            </div>
+            <div id="instructions">
+                <h3>Controls</h3>
+                <div class="control-item">↑ - Thrust</div>
+                <div class="control-item">← → - Rotate</div>
+                <div class="control-item">Space - Shoot</div>
+                <div class="control-item">H - Hyperspace</div>
+                <div class="control-item">P - Pause</div>
+            </div>
+        </div>
+        
+        <!-- Mobile controls with forced visibility -->
+        <div id="mobileControls">
+            <button id="leftBtn" class="control-btn">←</button>
+            <button id="rightBtn" class="control-btn">→</button>
+            <button id="thrustBtn" class="control-btn">↑</button>
+            <button id="fireBtn" class="control-btn fire">FIRE</button>
+            <button id="hyperBtn" class="control-btn">H</button>
+        </div>
+    </div>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

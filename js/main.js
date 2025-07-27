@@ -1,7 +1,6 @@
 import { Game } from './Game.js';
 import { CONFIG } from './config.js';
 import { Logger } from './Logger.js';
-import { MobileResponsive } from './MobileResponsive.js';
 
 // Initialize logger
 const logger = new Logger('DEBUG');
@@ -110,15 +109,12 @@ window.addEventListener('DOMContentLoaded', () => {
         logger.info('Starting game loop');
         requestAnimationFrame(gameLoop);
         
-        // Setup responsive mobile layout
-        let mobileResponsive = null;
+        // Show mobile controls on touch devices
         const mobileControls = document.querySelector('.mobile-controls');
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
             if (mobileControls) {
-                logger.info('Mobile device detected - setting up responsive layout');
-                mobileResponsive = new MobileResponsive();
                 mobileControls.style.display = 'flex';
-                logger.info('Mobile controls enabled with responsive sizing');
+                logger.info('Mobile controls enabled');
             }
         }
         
