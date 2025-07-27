@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Asteroids Test</title>
+    <style>
+        body { 
+            background: black; 
+            color: white; 
+            font-family: monospace; 
+            padding: 20px;
+        }
+        canvas { 
+            border: 1px solid cyan; 
+            display: block; 
+            margin: 20px 0;
+        }
+        button { 
+            padding: 10px 20px; 
+            font-size: 16px;
+            margin: 5px;
+        }
+        .log { 
+            background: #222; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-left: 3px solid cyan;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Asteroids Test</h1>
+    
+    <div>
+        <button onclick="testBasicLoading()">Test Module Loading</button>
+        <button onclick="testGameCreation()">Test Game Creation</button>
+        <button onclick="testGameStart()">Test Game Start</button>
+    </div>
+    
+    <!-- Required elements -->
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <button id="startButton">Start Game</button>
+    <button id="resumeButton" style="display: none;">Resume</button>
+    
+    <!-- Required UI elements -->
+    <div id="gameMenu" style="display: block;">Game Menu</div>
+    <div id="score">0</div>
+    <div id="lives">3</div>
+    <div id="level">1</div>
+    <div id="highScore">0</div>
+    <div id="shieldIndicator"><span>0</span></div>
+    <div id="rapidFireIndicator"><span>0</span></div>
+    <ol id="highScoresList"></ol>
+    
+    <!-- Mobile controls -->
+    <div class="mobile-controls">
+        <button id="leftBtn">←</button>
+        <button id="rightBtn">→</button>
+        <button id="thrustBtn">↑</button>
+        <button id="fireBtn">FIRE</button>
+        <button id="hyperBtn">H</button>
+    </div>
+    
+    <div id="log-output"></div>
+
+    <script type="module">
+        let game = null;
+        
+        function log(message) {
+            console.log(message);
+            const logDiv = document.createElement('div');
+            logDiv.className = 'log';
+            logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            document.getElementById('log-output').appendChild(logDiv);
+        }
+        
+        window.testBasicLoading = async function() {
+            try {
+                log('Testing basic module loading...');
+                
+                const { CONFIG } = await import('./js/config.js');
+                log('✓ CONFIG loaded');
+                
+                const { Vector2 } = await import('./js/utils.js');
+                log('✓ Vector2 loaded');
+                
+                const { Entity } = await import('./js/entities/Entity.js');
+                log('✓ Entity loaded');
+                
+                log('✓ All basic modules loaded successfully');
+                
+            } catch (error) {
+                log('✗ Error loading modules: ' + error.message);
+                console.error(error);
+            }
+        };
+        
+        window.testGameCreation = async function() {
+            try {
+                log('Testing game creation...');
+                
+                const { Game } = await import('./js/Game.js');
+                log('✓ Game class loaded');
+                
+                const canvas = document.getElementById('gameCanvas');
+                if (!canvas) {
+                    throw new Error('Canvas not found');
+                }
+                log('✓ Canvas found');
+                
+                game = new Game(canvas);
+                log('✓ Game instance created successfully');
+                
+                // Make game accessible for debugging
+                window.game = game;
+                
+            } catch (error) {
+                log('✗ Error creating game: ' + error.message);
+                console.error(error);
+            }
+        };
+        
+        window.testGameStart = function() {
+            try {
+                if (!game) {
+                    log('✗ Game not created yet. Run "Test Game Creation" first.');
+                    return;
+                }
+                
+                log('Testing game start...');
+                game.start();
+                log('✓ Game started successfully');
+                
+            } catch (error) {
+                log('✗ Error starting game: ' + error.message);
+                console.error(error);
+            }
+        };
+        
+        // Auto-test on load
+        log('Page loaded, starting automatic tests...');
+        setTimeout(testBasicLoading, 100);
+    </script>
+</body>
+</html>

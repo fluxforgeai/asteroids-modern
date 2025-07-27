@@ -11,11 +11,37 @@ import { Vector2, randomRange, circleCollision, ObjectPool, QuadTree } from './u
 
 export class Game {
     constructor(canvas) {
+        console.log('[GAME] Constructor called with canvas:', canvas);
+        
+        if (!canvas) {
+            throw new Error('Canvas is required for Game constructor');
+        }
+        
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.inputHandler = new InputHandler();
-        this.soundSystem = new SoundSystem();
-        this.particleSystem = new ParticleSystem();
+        
+        if (!this.ctx) {
+            throw new Error('Failed to get 2D context from canvas');
+        }
+        
+        console.log('[GAME] Canvas context acquired');
+        
+        try {
+            console.log('[GAME] Initializing InputHandler...');
+            this.inputHandler = new InputHandler();
+            console.log('[GAME] InputHandler initialized');
+            
+            console.log('[GAME] Initializing SoundSystem...');
+            this.soundSystem = new SoundSystem();
+            console.log('[GAME] SoundSystem initialized');
+            
+            console.log('[GAME] Initializing ParticleSystem...');
+            this.particleSystem = new ParticleSystem();
+            console.log('[GAME] ParticleSystem initialized');
+        } catch (error) {
+            console.error('[GAME] Error during subsystem initialization:', error);
+            throw error;
+        }
         
         // Game state
         this.state = 'menu'; // menu, playing, paused, gameOver
@@ -46,8 +72,15 @@ export class Game {
         // Performance
         this.quadTree = null;
         
+        console.log('[GAME] Setting up canvas...');
         this.setupCanvas();
+        console.log('[GAME] Canvas setup complete');
+        
+        console.log('[GAME] Updating UI...');
         this.updateUI();
+        console.log('[GAME] UI update complete');
+        
+        console.log('[GAME] Constructor completed successfully');
     }
     
     setupCanvas() {
@@ -73,28 +106,51 @@ export class Game {
     }
     
     start() {
-        this.state = 'playing';
-        this.score = 0;
-        this.lives = CONFIG.GAME.STARTING_LIVES;
-        this.level = 1;
+        console.log('[GAME] start() method called');
         
-        // Create ship
-        this.ship = new Ship(this.canvas.width / 2, this.canvas.height / 2);
-        this.ship.makeInvulnerable();
-        
-        // Clear arrays
-        this.asteroids = [];
-        this.bullets = [];
-        this.powerUps = [];
-        this.ufo = null;
-        
-        // Create initial asteroids
-        this.createAsteroidWave();
-        
-        // Hide menu
-        document.getElementById('gameMenu').style.display = 'none';
-        
-        this.updateUI();
+        try {
+            this.state = 'playing';
+            this.score = 0;
+            this.lives = CONFIG.GAME.STARTING_LIVES;
+            this.level = 1;
+            
+            console.log('[GAME] Game state reset to:', this.state);
+            
+            // Create ship
+            console.log('[GAME] Creating ship...');
+            this.ship = new Ship(this.canvas.width / 2, this.canvas.height / 2);
+            this.ship.makeInvulnerable();
+            console.log('[GAME] Ship created at:', this.ship.position);
+            
+            // Clear arrays
+            this.asteroids = [];
+            this.bullets = [];
+            this.powerUps = [];
+            this.ufo = null;
+            
+            console.log('[GAME] Arrays cleared');
+            
+            // Create initial asteroids
+            console.log('[GAME] Creating asteroid wave...');
+            this.createAsteroidWave();
+            console.log('[GAME] Created', this.asteroids.length, 'asteroids');
+            
+            // Hide menu
+            const gameMenu = document.getElementById('gameMenu');
+            if (gameMenu) {
+                gameMenu.style.display = 'none';
+                console.log('[GAME] Game menu hidden');
+            } else {
+                console.warn('[GAME] Game menu element not found');
+            }
+            
+            this.updateUI();
+            console.log('[GAME] Game started successfully');
+            
+        } catch (error) {
+            console.error('[GAME] Error in start() method:', error);
+            throw error;
+        }
     }
     
     createAsteroidWave() {
@@ -300,7 +356,7 @@ export class Game {
             const bullet = this.bullets[i];
             if (!bullet.isPlayerBullet) continue;
             
-            const possibleCollisions = this.quadTree.retrieve(bullet.getBounds());
+            // const possibleCollisions = this.quadTree.retrieve(bullet.getBounds());
             
             for (let j = this.asteroids.length - 1; j >= 0; j--) {
                 const asteroid = this.asteroids[j];

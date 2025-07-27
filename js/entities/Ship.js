@@ -4,6 +4,7 @@ import { CONFIG } from '../config.js';
 
 export class Ship extends Entity {
     constructor(x, y) {
+        console.log('[SHIP] Creating ship at position:', x, y);
         super(x, y, CONFIG.SHIP.SIZE);
         this.thrustPower = 0;
         this.rotationSpeed = 0;

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids Debug</title>
+    <style>
+        body {
+            background: #000;
+            color: #0ff;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .debug-panel {
+            background: rgba(0, 50, 50, 0.8);
+            padding: 20px;
+            border: 1px solid #0ff;
+            margin: 10px 0;
+        }
+        .error { color: #ff0000; }
+        .success { color: #00ff00; }
+        .warning { color: #ffff00; }
+        #console-output {
+            height: 300px;
+            overflow-y: auto;
+            background: #111;
+            padding: 10px;
+            border: 1px solid #333;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Asteroids Debug Panel</h1>
+    
+    <div class="debug-panel">
+        <h2>Module Loading Test</h2>
+        <div id="module-status">Testing modules...</div>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>DOM Elements Check</h2>
+        <div id="dom-status">Checking DOM elements...</div>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Game Initialization</h2>
+        <canvas id="gameCanvas" width="800" height="600" style="border: 1px solid #0ff;"></canvas>
+        <button id="startButton">Start Game</button>
+        <button id="resumeButton" style="display: none;">Resume</button>
+        <div id="gameMenu"></div>
+        <div id="gameStats">
+            <div>Score: <span id="score">0</span></div>
+            <div>Lives: <span id="lives">3</span></div>
+            <div>Level: <span id="level">1</span></div>
+            <div>High Score: <span id="highScore">0</span></div>
+        </div>
+        <div id="powerUps">
+            <div id="shieldIndicator">Shield: <span>0</span></div>
+            <div id="rapidFireIndicator">Rapid Fire: <span>0</span></div>
+        </div>
+        <div id="highScoresList"></div>
+        <div class="mobile-controls">
+            <button id="leftBtn">←</button>
+            <button id="rightBtn">→</button>
+            <button id="thrustBtn">↑</button>
+            <button id="fireBtn">FIRE</button>
+            <button id="hyperBtn">H</button>
+        </div>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Console Output</h2>
+        <div id="console-output"></div>
+    </div>
+
+    <script type="module">
+        // Capture console output
+        const consoleOutput = document.getElementById('console-output');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function logToPanel(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToPanel(args.join(' '), 'success');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToPanel('ERROR: ' + args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            logToPanel('WARN: ' + args.join(' '), 'warning');
+        };
+        
+        // Test module loading
+        const moduleStatus = document.getElementById('module-status');
+        const domStatus = document.getElementById('dom-status');
+        
+        async function testModules() {
+            try {
+                console.log('Testing CONFIG module...');
+                const { CONFIG } = await import('./js/config.js');
+                console.log('CONFIG loaded:', CONFIG);
+                
+                console.log('Testing utils module...');
+                const { Vector2 } = await import('./js/utils.js');
+                console.log('Vector2 loaded:', Vector2);
+                
+                console.log('Testing Entity module...');
+                const { Entity } = await import('./js/entities/Entity.js');
+                console.log('Entity loaded:', Entity);
+                
+                console.log('Testing Ship module...');
+                const { Ship } = await import('./js/entities/Ship.js');
+                console.log('Ship loaded:', Ship);
+                
+                console.log('Testing Game module...');
+                const { Game } = await import('./js/Game.js');
+                console.log('Game loaded:', Game);
+                
+                moduleStatus.innerHTML = '<span class="success">✓ All modules loaded successfully</span>';
+                
+                // Test DOM elements
+                const requiredElements = [
+                    'gameCanvas', 'startButton', 'resumeButton', 'gameMenu',
+                    'score', 'lives', 'level', 'highScore'
+                ];
+                
+                let allFound = true;
+                let domReport = '';
+                
+                for (const id of requiredElements) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        domReport += `<div class="success">✓ ${id} found</div>`;
+                    } else {
+                        domReport += `<div class="error">✗ ${id} missing</div>`;
+                        allFound = false;
+                    }
+                }
+                
+                domStatus.innerHTML = domReport;
+                
+                if (allFound) {
+                    console.log('All DOM elements found, testing game initialization...');
+                    
+                    // Test game creation
+                    const canvas = document.getElementById('gameCanvas');
+                    const game = new Game(canvas);
+                    console.log('Game instance created successfully:', game);
+                    
+                    // Test start button
+                    document.getElementById('startButton').addEventListener('click', () => {
+                        console.log('Start button clicked');
+                        try {
+                            game.start();
+                            console.log('Game started successfully');
+                        } catch (error) {
+                            console.error('Error starting game:', error);
+                        }
+                    });
+                    
+                } else {
+                    console.error('Some DOM elements are missing');
+                }
+                
+            } catch (error) {
+                console.error('Module loading failed:', error);
+                moduleStatus.innerHTML = `<span class="error">✗ Module loading failed: ${error.message}</span>`;
+            }
+        }
+        
+        testModules();
+    </script>
+</body>
+</html>
