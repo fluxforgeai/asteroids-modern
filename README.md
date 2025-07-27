@@ -66,24 +66,31 @@ A modern HTML5 Canvas implementation of the classic Asteroids arcade game, featu
    cd asteroids-modern
    ```
 
-2. **Serve the files**
+2. **Start the web server** (Required for ES6 modules)
    
-   **Option A: Python HTTP Server**
+   **Option A: Use the included script**
+   ```bash
+   ./start-server.sh
+   ```
+   
+   **Option B: Python HTTP Server**
    ```bash
    python3 -m http.server 8000
    ```
    
-   **Option B: Node.js http-server**
+   **Option C: Node.js http-server**
    ```bash
    npx http-server
    ```
    
-   **Option C: Simply open `index.html`** in your browser (some features may be limited)
+   **⚠️ Important**: Do NOT open `index.html` directly in the browser - ES6 modules require a web server due to CORS policy.
 
 3. **Open in browser**
    ```
    http://localhost:8000
    ```
+   
+   Then click on `index.html` to start the game.
 
 ## 🏗️ Project Structure
 
