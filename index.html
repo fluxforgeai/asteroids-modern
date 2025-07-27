@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids - Modern Edition</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="gameUI">
+            <div id="gameStats">
+                <div class="stat-item">Score: <span id="score">0</span></div>
+                <div class="stat-item">High Score: <span id="highScore">0</span></div>
+                <div class="stat-item">Lives: <span id="lives">3</span></div>
+                <div class="stat-item">Level: <span id="level">1</span></div>
+            </div>
+            <div id="powerUps">
+                <div class="power-up" id="shieldIndicator">Shield: <span>0</span></div>
+                <div class="power-up" id="rapidFireIndicator">Rapid Fire: <span>0</span></div>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="gameMenu">
+            <h1>ASTEROIDS</h1>
+            <button id="startButton" class="menu-button">Start Game</button>
+            <button id="resumeButton" class="menu-button" style="display: none;">Resume</button>
+            <div id="highScores" class="high-scores">
+                <h3>High Scores</h3>
+                <ol id="highScoresList"></ol>
+            </div>
+            <div id="instructions">
+                <h3>Controls</h3>
+                <div class="control-item">↑ - Thrust</div>
+                <div class="control-item">← → - Rotate</div>
+                <div class="control-item">Space - Shoot</div>
+                <div class="control-item">H - Hyperspace</div>
+                <div class="control-item">P - Pause</div>
+            </div>
+        </div>
+        
+        <div id="mobileControls" class="mobile-controls">
+            <button id="leftBtn" class="control-btn">←</button>
+            <button id="rightBtn" class="control-btn">→</button>
+            <button id="thrustBtn" class="control-btn">↑</button>
+            <button id="fireBtn" class="control-btn fire">FIRE</button>
+            <button id="hyperBtn" class="control-btn">H</button>
+        </div>
+    </div>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
